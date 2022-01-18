@@ -38,6 +38,7 @@ services:
       - MYSQL_PASSWORD=123123
       - MYSQL_HOST=db
       - REDIS_HOST=redis
+      - REDIS_HOST_PASSWORD=PassworD
       - NEXTCLOUD_TRUSTED_DOMAINS=yourdomainname.com
       - TRUSTED_PROXIES=172.0.0.0/12
     ports:
@@ -52,14 +53,19 @@ services:
 
   redis:
     image: redis:latest
+    command: redis-server --requirepass PassworD
+#redis-server --appendonly yes
     restart: always
     volumes:
-      - /mnt/NC/redis:/var/lib/redis
+      - /mnt/NC/redis:/data
+     # some config exemples use var/lib/data directory, but for me this doesn't work and find redis store this data in /data folder
     deploy:
        mode: global
        placement:
         constraints: [node.hostname == docker-master] 
-
+        
+#You need to make some changes to nrxtcloud config file and add redis as service for https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/caching_configuration.html
+# depence of your settup  'host' shuold be diferent. In mine case I use "redis" as host and work perfect  
 
   
  
